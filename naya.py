@@ -318,8 +318,8 @@ class TrafficDetectionSystem:
 
 
 def main():
-    VIDEO_PATH = "traffic2.mp4"
-    CONFIDENCE_THRESHOLD = 0.56
+    VIDEO_PATH = "traffic.mp4"
+    CONFIDENCE_THRESHOLD = 0.55
     print("="*50)
     print("REAL-TIME TRAFFIC DETECTION & TRACKING SYSTEM")
     print("="*50)
