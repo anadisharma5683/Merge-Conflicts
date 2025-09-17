@@ -286,7 +286,7 @@ class TrafficDetectionSystem:
                             (width - 200, 30), cv2.FONT_HERSHEY_SIMPLEX,
                             0.5, (255, 255, 255), 1)
                 if display:
-                    cv2.imshow('Traffic Detection System', frame)
+                    cv2.imshow('Merge Conflict', frame)
                 if frame_num % 30 == 0:
                     progress = (frame_num / total_frames) * 100
                     print(f"Progress: {progress:.1f}% - Total vehicles: {self.counters['total']}")
@@ -318,7 +318,7 @@ class TrafficDetectionSystem:
 
 
 def main():
-    VIDEO_PATH = "traffic.mp4"
+    VIDEO_PATH = "traffic3.mp4"
     CONFIDENCE_THRESHOLD = 0.55
     print("="*50)
     print("REAL-TIME TRAFFIC DETECTION & TRACKING SYSTEM")
