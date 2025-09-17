@@ -3,7 +3,9 @@ import numpy as np
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional
-
+from flask import Flask, Response, jsonify
+from flask_cors import CORS
+from ultralytics import YOLO
 
 
 @dataclass
@@ -141,13 +143,22 @@ class TrafficDetectionSystem:
 
         self.use_yolov8 = False
         try:
-            from ultralytics import YOLO
-            print("Using YOLOv8 for detection")
             self.model = YOLO('yolov8n.pt' if model_path is None else model_path)
             self.use_yolov8 = True
         except ImportError:
             print("YOLOv8 not available, using YOLOv4-tiny")
             self.load_yolov4()
+
+    def load_yolov4(self):
+        try:
+            self.net = cv2.dnn.readNet("yolov4-tiny.weights", "yolov4-tiny.cfg")
+            with open("coco.names", "r") as f:
+                self.classes = [line.strip() for line in f.readlines()]
+            self.output_layers = [self.net.getLayerNames()[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
+        except cv2.error as e:
+            print(f"Error loading YOLOv4 files: {e}")
+            self.net = None
+
 
     def draw_roi(self, frame):
         """Draw translucent ROI area with border"""
@@ -211,8 +222,8 @@ class TrafficDetectionSystem:
                             cx, cy = x + w // 2, y + h // 2
                             if self.is_inside_roi((cx, cy)):
                                 detections.append(((x, y, w, h),
-                                                   mapped_class,
-                                                   float(confidence)))
+                                                    mapped_class,
+                                                    float(confidence)))
         return detections
 
     def draw_detections(self, frame, tracked_objects):
@@ -254,86 +265,62 @@ class TrafficDetectionSystem:
                 self.counters['total'] += 1
                 self.tracker.counted_ids.add(obj_id)
 
-    def process_video(self, video_path: str, display: bool = True):
+    def generate_frames(self, video_path: str):
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
             print(f"Error: Could not open video file {video_path}")
             return
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
-        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        print(f"Processing video: {video_path}")
-        print(f"FPS: {fps}, Total frames: {total_frames}")
-        print("Press 'q' to quit, 'p' to pause/resume")
+        
         frame_num = 0
-        paused = False
         while True:
-            if not paused:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                frame_num += 1
-                height, width, _ = frame.shape
-                frame = self.draw_roi(frame)  # ✅ ROI overlay added
-                if self.use_yolov8:
-                    detections = self.detect_vehicles_yolov8(frame)
-                else:
-                    detections = self.detect_vehicles_yolov4(frame)
-                tracked_objects = self.tracker.update(detections, frame_num)
-                self.update_counters(tracked_objects)
-                self.draw_detections(frame, tracked_objects)
-                frame = self.draw_statistics(frame)
-                cv2.putText(frame, f"Frame: {frame_num}/{total_frames}",
-                            (width - 200, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5, (255, 255, 255), 1)
-                if display:
-                    cv2.imshow('Traffic Detection System', frame)
-                if frame_num % 30 == 0:
-                    progress = (frame_num / total_frames) * 100
-                    print(f"Progress: {progress:.1f}% - Total vehicles: {self.counters['total']}")
-            if display:
-                key = cv2.waitKey(1 if not paused else 0) & 0xFF
-                if key == ord('q'):
-                    break
-                elif key == ord('p'):
-                    paused = not paused
-                    if paused:
-                        print("Paused. Press 'p' to resume.")
-                    else:
-                        print("Resumed.")
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            frame_num += 1
+            frame = self.draw_roi(frame)
+            if self.use_yolov8:
+                detections = self.detect_vehicles_yolov8(frame)
+            else:
+                detections = self.detect_vehicles_yolov4(frame)
+            tracked_objects = self.tracker.update(detections, frame_num)
+            self.update_counters(tracked_objects)
+            self.draw_detections(frame, tracked_objects)
+            frame = self.draw_statistics(frame)
+            
+            # Encode the processed frame into JPEG format for streaming
+            ret, buffer = cv2.imencode('.jpg', frame)
+            if not ret:
+                continue
+            
+            # Yield the frame as a byte stream
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+        
         cap.release()
-        cv2.destroyAllWindows()
-        self.print_final_stats()
 
-    def print_final_stats(self):
-        print("\n" + "="*50)
-        print("FINAL VEHICLE COUNT STATISTICS")
-        print("="*50)
-        for vehicle_type in ['car', 'motorcycle', 'bus', 'truck']:
-            count = self.counters[vehicle_type]
-            percentage = (count / max(self.counters['total'], 1)) * 100
-            print(f"{vehicle_type.capitalize():15} : {count:5d} ({percentage:5.1f}%)")
-        print("-"*50)
-        print(f"{'TOTAL':15} : {self.counters['total']:5d}")
-        print("="*50)
+# ------------------------------------------------------------
+# Flask App Setup
+# ------------------------------------------------------------
+app = Flask(__name__)
+CORS(app)
+detector = TrafficDetectionSystem(confidence_threshold=0.55)
 
+@app.route('/')
+def index():
+    return "Backend is running. Go to your frontend URL to view the analysis."
 
-def main():
+@app.route('/video_feed')
+def video_feed():
     VIDEO_PATH = "traffic.mp4"
-    CONFIDENCE_THRESHOLD = 0.55
-    print("="*50)
-    print("REAL-TIME TRAFFIC DETECTION & TRACKING SYSTEM")
-    print("="*50)
-    detector = TrafficDetectionSystem(confidence_threshold=CONFIDENCE_THRESHOLD)
-    try:
-        detector.process_video(VIDEO_PATH, display=True)
-    except Exception as e:
-        print(f"Error processing video: {e}")
-        print("\nPlease ensure:")
-        print("1. The video file 'traffic.mp4' exists in the current directory")
-        print("2. You have installed required packages:")
-        print("   pip install opencv-python numpy ultralytics")
-        print("3. Or for YOLOv4, download the required files:")
+    return Response(detector.generate_frames(VIDEO_PATH),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/get_counts')
+def get_counts():
+    return jsonify(detector.counters)
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    print("Starting Flask backend...")
+    print("Navigate to http://127.0.0.1:5000 in your browser.")
+    app.run(host='0.0.0.0', port=5000, debug=True)
