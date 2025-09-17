@@ -132,7 +132,7 @@ class TrafficDetectionSystem:
         self.tracker = VehicleTracker()
 
         # ROI region (x1, y1, x2, y2)
-        self.roi = (300, 170, 800, 600)  
+        self.roi = (270, 170, 720, 600)  
 
         self.vehicle_classes = {2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
 
@@ -304,7 +304,7 @@ class TrafficDetectionSystem:
 # ------------------------------------------------------------
 app = Flask(__name__)
 CORS(app)
-detector = TrafficDetectionSystem(confidence_threshold=0.55)
+detector = TrafficDetectionSystem(confidence_threshold=0.59)
 
 @app.route('/')
 def index():
