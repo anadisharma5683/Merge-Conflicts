@@ -1810,3 +1810,4 @@ const SmartTrafficSystem = () => {
 };
 
 export default SmartTrafficSystem;
+
