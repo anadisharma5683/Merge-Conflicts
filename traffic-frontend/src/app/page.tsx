@@ -89,12 +89,12 @@ const SmartTrafficSystem = () => {
 
   // Sample cross paths data
   const crossPaths = [
-    { id: 1, name: 'Main St & Oak Ave', x: 25, y: 30, congestion: 'High', vehicles: 45 },
-    { id: 2, name: 'First St & Pine St', x: 60, y: 45, congestion: 'Medium', vehicles: 32 },
-    { id: 3, name: 'Broadway & Elm St', x: 40, y: 70, congestion: 'Low', vehicles: 18 },
-    { id: 4, name: 'Center Ave & Maple Dr', x: 75, y: 25, congestion: 'High', vehicles: 52 },
-    { id: 5, name: 'Park Rd & Cedar Ln', x: 20, y: 80, congestion: 'Medium', vehicles: 28 }
-  ];
+    { id: 1, name: 'Rajmahal Square', x: 25, y: 30, congestion: 'High', vehicles: 45 },
+    { id: 2, name: 'Kalpana Square', x: 60, y: 45, congestion: 'Medium', vehicles: 32 },
+    { id: 3, name: 'Shastri Nagar Square', x: 40, y: 70, congestion: 'Low', vehicles: 18 },
+    { id: 4, name: 'Acharya Vihar Square', x: 75, y: 25, congestion: 'High', vehicles: 52 },
+    { id: 5, name: 'Maharishi College Square', x: 20, y: 80, congestion: 'Medium', vehicles: 28 }
+  ];
 
   // Traffic trends data
   const trafficTrends = [
