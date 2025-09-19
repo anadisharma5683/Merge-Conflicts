@@ -644,8 +644,8 @@ const SmartTrafficSystem = () => {
                     alt="Live Traffic Feed"
                     style={{
                       width: '100%',
-                      height: '400px',
-                      objectFit: 'cover',
+                      height: '500px',
+                      objectFit: 'none',
                       display: 'block'
                     }}
                     onError={(e) => {
