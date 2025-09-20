@@ -68,11 +68,11 @@ const SmartTrafficSystem = () => {
   // Congestion & Analytics
   const [congestionLevel, ] = useState(65);
   const [trafficStats, ] = useState({
-    cars: 234,
-    trucks: 45,
-    buses: 12,
-    motorcycles: 89,
-    total: 380
+    cars: "Will be updated",
+    trucks: "Will be updated",
+    buses: "Will be updated",
+    motorcycles: "Will be updated",
+    total: "Will be updated"
   });
 
   // Accident Reporting
@@ -88,12 +88,12 @@ const SmartTrafficSystem = () => {
   });
 
   // Sample cross paths data
-  const crossPaths = [
-    { id: 1, name: 'Main St & Oak Ave', x: 25, y: 30, congestion: 'High', vehicles: 45 },
-    { id: 2, name: 'First St & Pine St', x: 60, y: 45, congestion: 'Medium', vehicles: 32 },
-    { id: 3, name: 'Broadway & Elm St', x: 40, y: 70, congestion: 'Low', vehicles: 18 },
-    { id: 4, name: 'Center Ave & Maple Dr', x: 75, y: 25, congestion: 'High', vehicles: 52 },
-    { id: 5, name: 'Park Rd & Cedar Ln', x: 20, y: 80, congestion: 'Medium', vehicles: 28 }
+ const crossPaths = [
+    { id: 1, name: 'Rajmahal Square', x: 25, y: 30, congestion: 'High', vehicles: 45 },
+    { id: 2, name: 'Kalpana Square', x: 60, y: 45, congestion: 'Medium', vehicles: 32 },
+    { id: 3, name: 'Shastri Nagar Square', x: 40, y: 70, congestion: 'Low', vehicles: 18 },
+    { id: 4, name: 'Acharya Vihar Square', x: 75, y: 25, congestion: 'High', vehicles: 52 },
+    { id: 5, name: 'Maharishi College Square', x: 20, y: 80, congestion: 'Medium', vehicles: 28 }
   ];
 
   // Traffic trends data
@@ -304,8 +304,10 @@ const SmartTrafficSystem = () => {
           }}>
             <strong>Demo Credentials:</strong><br />
             Username: admin<br />
-            Password: admin
+            Password: admin<br/>
+            <strong>For :- ODISHA GOVERNMENT</strong>
           </div>
+              
         </div>
       </div>
     );
@@ -419,7 +421,7 @@ const SmartTrafficSystem = () => {
         <main style={{ flex: 1, padding: '30px', overflow: 'auto' }}>
           {activeSection === 'map' && (
             <div>
-              <h2 style={{ color: theme.primary, marginBottom: '20px' }}>City Traffic Map</h2>
+              <h2 style={{ color: theme.primary, marginBottom: '20px' }}>Bhubaneswar City Traffic Map</h2>
               
               <div style={{ display: 'flex', gap: '30px' }}>
                 {/* Map Area */}
@@ -622,7 +624,7 @@ const SmartTrafficSystem = () => {
           {/* Video Feed Section */}
           {activeSection === 'video' && (
             <div>
-              <h2 style={{ color: theme.primary, marginBottom: '20px' }}>Live Traffic Video Analysis</h2>
+              <h2 style={{ color: theme.primary, marginBottom: '20px' }}>Live Traffic Video Analysis : Bhubaneshwar</h2>
               
               <div style={{
                 background: theme.background,
@@ -775,10 +777,10 @@ const SmartTrafficSystem = () => {
                   gap: '20px'
                 }}>
                   {[
-                    { type: 'Cars', count: trafficStats.cars, icon: '🚗', color: '#4caf50' },
-                    { type: 'Trucks', count: trafficStats.trucks, icon: '🚚', color: theme.secondary },
-                    { type: 'Buses', count: trafficStats.buses, icon: '🚌', color: '#ffa726' },
-                    { type: 'Motorcycles', count: trafficStats.motorcycles, icon: '🏍️', color: '#2196f3' }
+                    { type: 'Cars', count: trafficStats.cars, icon: '', color: '#4caf50' },
+                    { type: 'Trucks', count: trafficStats.trucks, icon: '', color: theme.secondary },
+                    { type: 'Buses', count: trafficStats.buses, icon: '', color: '#ffa726' },
+                    { type: 'Motorcycles', count: trafficStats.motorcycles, icon: '', color: '#2196f3' }
                   ].map(stat => (
                     <div key={stat.type} style={{
                       background: theme.accent,
