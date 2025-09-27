@@ -21,14 +21,14 @@ import {
 } from 'lucide-react';
 
 const SmartTrafficSystem = () => {
-  // Authentication & Navigation
+  // Authentication & Navigation   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeSection, setActiveSection] = useState('map');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  // Map & Cross Path Selection
+  // Map & Cross Path   Selection
   interface CrossPath {
     id: number;
     name: string;
