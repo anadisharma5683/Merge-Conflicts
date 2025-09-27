@@ -21,6 +21,10 @@ export default function LoginScreen({
   onPasswordChange,
   onLogin
 }: LoginScreenProps) {
+  const handleAutofill = () => {
+    onUsernameChange('admin');
+    onPasswordChange('admin');
+  };
   return (
     <div style={{
       minHeight: '100vh',
@@ -129,7 +133,40 @@ export default function LoginScreen({
         </form>
 
         <div style={{
-          marginTop: '30px',
+          marginTop: '20px',
+          display: 'flex',
+          gap: '10px'
+        }}>
+          <button
+            type="button"
+            onClick={handleAutofill}
+            style={{
+              flex: 1,
+              padding: '12px 20px',
+              background: theme.accent,
+              color: theme.primary,
+              border: `2px solid ${theme.primary}20`,
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = `${theme.primary}10`;
+              e.currentTarget.style.borderColor = theme.primary;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = theme.accent;
+              e.currentTarget.style.borderColor = `${theme.primary}20`;
+            }}
+          >
+            🔑 Auto-fill Demo Credentials
+          </button>
+        </div>
+
+        <div style={{
+          marginTop: '20px',
           padding: '15px',
           background: theme.accent,
           borderRadius: '8px',

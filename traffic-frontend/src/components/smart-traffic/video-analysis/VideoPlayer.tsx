@@ -8,10 +8,10 @@ interface VideoPlayerProps {
   volume: number;
   isFullscreen: boolean;
   theme: Theme;
-  onPlayPause: () => void;
+  onPlayPause: () => Promise<boolean> | void;
   onVolumeChange: (volume: number) => void;
   onFullscreen: () => void;
-  onResetCounters: () => void;
+  onResetCounters: () => Promise<void> | void;
 }
 
 export default function VideoPlayer({
@@ -25,27 +25,11 @@ export default function VideoPlayer({
   onResetCounters
 }: VideoPlayerProps) {
   const handlePlayPause = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:5000/play_pause', {
-        method: 'POST'
-      });
-      const data = await response.json();
-      onPlayPause();
-    } catch (error) {
-      console.error('Error controlling playback:', error);
-      onPlayPause();
-    }
+    await onPlayPause();
   };
 
   const handleResetCounters = async () => {
-    try {
-      await fetch('http://127.0.0.1:5000/reset_counters', {
-        method: 'POST'
-      });
-      onResetCounters();
-    } catch (error) {
-      console.error('Error resetting counters:', error);
-    }
+    await onResetCounters();
   };
 
   return (

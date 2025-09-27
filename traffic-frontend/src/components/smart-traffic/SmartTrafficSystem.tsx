@@ -7,6 +7,8 @@ import Header from './layout/Header';
 import Sidebar from './layout/Sidebar';
 import MapSection from './map/MapSection';
 import VideoAnalysisSection from './video-analysis/VideoAnalysisSection';
+import SignalsControlSection from './signals/SignalsControlSection';
+import { WarningsSection } from './dashboard';
 
 export default function SmartTrafficSystem() {
   const {
@@ -38,6 +40,13 @@ export default function SmartTrafficSystem() {
     setVideoVolume,
     isFullscreen,
     setIsFullscreen,
+    
+    // Traffic Signals
+    trafficSignals,
+    overrideMode,
+    setOverrideMode,
+    overrideLogs,
+    handleSignalOverride,
     
     // Analytics
     trafficStats
@@ -103,8 +112,23 @@ export default function SmartTrafficSystem() {
             />
           )}
 
+          {activeSection === 'signals' && (
+            <SignalsControlSection
+              trafficSignals={trafficSignals}
+              overrideMode={overrideMode}
+              overrideLogs={overrideLogs}
+              theme={theme}
+              onOverrideModeToggle={() => setOverrideMode(!overrideMode)}
+              onSignalOverride={handleSignalOverride}
+            />
+          )}
+
+          {activeSection === 'warnings' && (
+            <WarningsSection />
+          )}
+
           {/* Placeholder for other sections */}
-          {activeSection !== 'map' && activeSection !== 'video' && (
+          {!['map', 'video', 'signals', 'warnings'].includes(activeSection) && (
             <div style={{
               background: theme.background,
               borderRadius: '15px',

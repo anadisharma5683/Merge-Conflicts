@@ -30,11 +30,21 @@ export interface OverrideLog {
 }
 
 export interface TrafficStats {
-  cars: string;
-  trucks: string;
-  buses: string;
-  motorcycles: string;
-  total: string;
+  cars: number;
+  trucks: number;
+  buses: number;
+  motorcycles: number;
+  total: number;
+}
+
+export interface BackendVehicleResponse {
+  cars: number | string;
+  trucks: number | string;
+  buses: number | string;
+  motorcycles: number | string;
+  total: number | string;
+  is_playing?: boolean;
+  error?: string;
 }
 
 export interface Accident {
@@ -76,4 +86,31 @@ export interface NavItem {
   id: string;
   icon: any;
   label: string;
+}
+
+export interface TruckDetection {
+  id: string;
+  timestamp: Date;
+  location: string;
+  section: string;
+  isRestricted: boolean;
+  status: 'active' | 'acknowledged' | 'permitted';
+  notes?: string;
+}
+
+export interface TruckWarning {
+  id: string;
+  detection: TruckDetection;
+  message: string;
+  actions: TruckWarningAction[];
+  createdAt: Date;
+  resolvedAt?: Date;
+  resolvedBy?: string;
+}
+
+export interface TruckWarningAction {
+  id: string;
+  label: string;
+  type: 'inform' | 'permit' | 'dismiss';
+  color: 'blue' | 'green' | 'red';
 }

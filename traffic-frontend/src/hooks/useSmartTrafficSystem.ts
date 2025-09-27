@@ -28,13 +28,15 @@ export const useSmartTrafficSystem = () => {
   const [videoVolume, setVideoVolume] = useState(50);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Traffic Signal States
+  // Traffic Signal States - 4-way intersection with proper timing
+  // 60-second cycle: North(15s) -> East(15s) -> South(15s) -> West(15s)
   const [trafficSignals, setTrafficSignals] = useState<TrafficSignals>({
-    north: { state: 'red', countdown: 45 },
-    south: { state: 'green', countdown: 30 },
-    east: { state: 'yellow', countdown: 5 },
-    west: { state: 'red', countdown: 50 }
+    north: { state: 'green', countdown: 15 },
+    south: { state: 'red', countdown: 45 },
+    east: { state: 'red', countdown: 30 },
+    west: { state: 'red', countdown: 60 }
   });
+  const [currentCycle, setCurrentCycle] = useState(0); // 0=North, 1=East, 2=South, 3=West
 
   // Manual Override
   const [overrideMode, setOverrideMode] = useState(false);
@@ -43,11 +45,11 @@ export const useSmartTrafficSystem = () => {
   // Congestion & Analytics
   const [congestionLevel] = useState(65);
   const [trafficStats] = useState<TrafficStats>({
-    cars: "Will be updated",
-    trucks: "Will be updated",
-    buses: "Will be updated",
-    motorcycles: "Will be updated",
-    total: "Will be updated"
+    cars: 0,
+    trucks: 0,
+    buses: 0,
+    motorcycles: 0,
+    total: 0
   });
 
   // Accident Reporting
@@ -93,38 +95,85 @@ export const useSmartTrafficSystem = () => {
     }
   };
 
-  // Traffic signal countdown timer
+  // Traffic signal countdown timer - 4-way intersection logic
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn || overrideMode) return;
     
     const interval = setInterval(() => {
       setTrafficSignals(prev => {
         const newSignals = { ...prev };
+        
+        // Decrease all countdowns
         (Object.keys(newSignals) as Array<keyof typeof newSignals>).forEach(direction => {
           if (newSignals[direction].countdown > 0) {
             newSignals[direction].countdown -= 1;
-          } else {
-            // Cycle through states
-            const states = ['red', 'yellow', 'green'] as const;
-            const currentIndex = states.indexOf(newSignals[direction].state);
-            const nextIndex = (currentIndex + 1) % states.length;
-            newSignals[direction].state = states[nextIndex];
-            newSignals[direction].countdown = nextIndex === 0 ? 60 : nextIndex === 1 ? 5 : 30;
           }
         });
+        
+        // Check if current green phase is ending
+        const directions = ['north', 'east', 'south', 'west'] as const;
+        const currentGreenDirection = directions[currentCycle % 4];
+        
+        if (newSignals[currentGreenDirection].countdown === 0) {
+          // Move to next phase
+          setCurrentCycle(prev => prev + 1);
+          
+          const nextCycle = (currentCycle + 1) % 4;
+          const nextGreenDirection = directions[nextCycle];
+          
+          // Set all signals to red first
+          directions.forEach(dir => {
+            newSignals[dir].state = 'red';
+          });
+          
+          // Set next direction to green with 15-second timer
+          newSignals[nextGreenDirection].state = 'green';
+          newSignals[nextGreenDirection].countdown = 15;
+          
+          // Set countdown for other directions based on when they'll be green
+          directions.forEach((dir, index) => {
+            if (dir !== nextGreenDirection) {
+              const cyclesUntilGreen = (index - nextCycle + 4) % 4;
+              newSignals[dir].countdown = cyclesUntilGreen === 0 ? 60 : cyclesUntilGreen * 15;
+            }
+          });
+        }
+        
         return newSignals;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isLoggedIn]);
+  }, [isLoggedIn, overrideMode, currentCycle]);
 
-  // Manual signal override
+  // Manual signal override - Updated for 4-way intersection
   const handleSignalOverride = (direction: keyof TrafficSignals, newState: 'red' | 'yellow' | 'green') => {
-    setTrafficSignals(prev => ({
-      ...prev,
-      [direction]: { state: newState, countdown: newState === 'red' ? 60 : newState === 'yellow' ? 5 : 30 }
-    }));
+    if (newState === 'green') {
+      // When setting a direction to green, set all others to red
+      const directions = ['north', 'east', 'south', 'west'] as const;
+      const newSignals = { ...trafficSignals };
+      
+      directions.forEach(dir => {
+        if (dir === direction) {
+          newSignals[dir] = { state: 'green', countdown: 15 };
+          // Update current cycle to match the manually set direction
+          setCurrentCycle(directions.indexOf(direction));
+        } else {
+          newSignals[dir] = { state: 'red', countdown: Math.floor(Math.random() * 45) + 15 };
+        }
+      });
+      
+      setTrafficSignals(newSignals);
+    } else {
+      // For red or yellow, just update that specific signal
+      setTrafficSignals(prev => ({
+        ...prev,
+        [direction]: { 
+          state: newState, 
+          countdown: newState === 'red' ? 45 : 5 
+        }
+      }));
+    }
     
     const log: OverrideLog = {
       id: Date.now(),
