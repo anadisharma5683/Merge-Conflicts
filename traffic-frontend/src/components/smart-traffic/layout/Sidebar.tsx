@@ -1,14 +1,6 @@
 'use client';
 
-import { 
-  MapPin, 
-  Play, 
-  Settings, 
-  AlertTriangle, 
-  Activity,
-  BarChart3,
-  Shield
-} from 'lucide-react';
+import { MapPin, Play, Settings, AlertTriangle, Activity, BarChart3, Shield } from 'lucide-react';
 import { Theme, NavItem } from '@/types/smart-traffic';
 
 interface SidebarProps {
@@ -25,7 +17,8 @@ export default function Sidebar({ activeSection, theme, onSectionChange }: Sideb
     { id: 'warnings', icon: Shield, label: 'Traffic Warnings' },
     { id: 'congestion', icon: Activity, label: 'Congestion Monitor' },
     { id: 'analytics', icon: BarChart3, label: 'Traffic Analytics' },
-    { id: 'accidents', icon: AlertTriangle, label: 'Accident Reports' }
+    { id: 'accidents', icon: AlertTriangle, label: 'Accident Reports' },
+    { id: 'analysis', icon: AlertTriangle, label: 'AI Analysis' } // ✅ Added
   ];
 
   return (

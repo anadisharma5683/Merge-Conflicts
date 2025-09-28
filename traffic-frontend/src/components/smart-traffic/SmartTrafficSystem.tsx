@@ -9,58 +9,30 @@ import MapSection from './map/MapSection';
 import VideoAnalysisSection from './video-analysis/VideoAnalysisSection';
 import SignalsControlSection from './signals/SignalsControlSection';
 import { WarningsSection } from './dashboard';
+import AnalysisPage from './ai-analysis/AnalysisPage';
 
 export default function SmartTrafficSystem() {
   const {
-    // Authentication
-    isLoggedIn,
-    setIsLoggedIn,
-    username,
-    setUsername,
-    password,
-    setPassword,
-    loginError,
-    handleLogin,
-    
-    // Navigation
-    activeSection,
-    setActiveSection,
-    
-    // Map
-    selectedCrossPath,
-    setSelectedCrossPath,
-    showPathDetails,
-    setShowPathDetails,
+    isLoggedIn, setIsLoggedIn,
+    username, setUsername,
+    password, setPassword,
+    loginError, handleLogin,
+    activeSection, setActiveSection,
+    selectedCrossPath, setSelectedCrossPath,
+    showPathDetails, setShowPathDetails,
     crossPaths,
-    
-    // Video
-    isVideoPlaying,
-    setIsVideoPlaying,
-    videoVolume,
-    setVideoVolume,
-    isFullscreen,
-    setIsFullscreen,
-    
-    // Traffic Signals
-    trafficSignals,
-    overrideMode,
-    setOverrideMode,
-    overrideLogs,
-    handleSignalOverride,
-    
-    // Location Signals
-    locationSignalData,
-    selectedSignalLocation,
-    setSelectedSignalLocation,
+    isVideoPlaying, setIsVideoPlaying,
+    videoVolume, setVideoVolume,
+    isFullscreen, setIsFullscreen,
+    trafficSignals, overrideMode, setOverrideMode,
+    overrideLogs, handleSignalOverride,
+    locationSignalData, selectedSignalLocation, setSelectedSignalLocation,
     handleLocationSignalOverride,
-    
-    // Analytics
     trafficStats
   } = useSmartTrafficSystem();
 
   const theme = smartTrafficTheme;
 
-  // Login Screen
   if (!isLoggedIn) {
     return (
       <LoginScreen
@@ -75,7 +47,6 @@ export default function SmartTrafficSystem() {
     );
   }
 
-  // Main Dashboard
   return (
     <div style={{
       minHeight: '100vh',
@@ -136,12 +107,13 @@ export default function SmartTrafficSystem() {
             />
           )}
 
-          {activeSection === 'warnings' && (
-            <WarningsSection />
+          {activeSection === 'warnings' && <WarningsSection />}
+
+          {activeSection === 'analysis' && (
+            <AnalysisPage theme={theme} trafficStats={trafficStats} />
           )}
 
-          {/* Placeholder for other sections */}
-          {!['map', 'video', 'signals', 'warnings'].includes(activeSection) && (
+          {!['map', 'video', 'signals', 'warnings', 'analysis'].includes(activeSection) && (
             <div style={{
               background: theme.background,
               borderRadius: '15px',
