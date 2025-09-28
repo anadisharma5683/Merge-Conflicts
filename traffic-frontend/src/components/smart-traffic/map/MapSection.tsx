@@ -11,6 +11,9 @@ interface MapSectionProps {
   theme: Theme;
   onCrossPathSelect: (path: CrossPath) => void;
   onShowPathDetails: (show: boolean) => void;
+  backgroundImage?: string;
+  showOverlay?: boolean;
+  overlayOpacity?: number;
 }
 
 export default function MapSection({
@@ -19,7 +22,10 @@ export default function MapSection({
   showPathDetails,
   theme,
   onCrossPathSelect,
-  onShowPathDetails
+  onShowPathDetails,
+  backgroundImage,
+  showOverlay,
+  overlayOpacity
 }: MapSectionProps) {
   const handleCrossPathSelect = (path: CrossPath) => {
     onCrossPathSelect(path);
@@ -39,6 +45,9 @@ export default function MapSection({
           crossPaths={crossPaths}
           theme={theme}
           onCrossPathSelect={handleCrossPathSelect}
+          backgroundImage={backgroundImage}
+          showOverlay={showOverlay}
+          overlayOpacity={overlayOpacity}
         />
 
         {showPathDetails && selectedCrossPath && (

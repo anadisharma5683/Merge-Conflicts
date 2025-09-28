@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   TrafficSignals, 
   OverrideLog, 
@@ -8,7 +8,8 @@ import {
   Accident, 
   NewAccident,
   CrossPath,
-  TrafficTrend
+  TrafficTrend,
+  LocationSignalData
 } from '@/types/smart-traffic';
 
 export const useSmartTrafficSystem = () => {
@@ -42,6 +43,9 @@ export const useSmartTrafficSystem = () => {
   const [overrideMode, setOverrideMode] = useState(false);
   const [overrideLogs, setOverrideLogs] = useState<OverrideLog[]>([]);
 
+  // Location Signal Selection
+  const [selectedSignalLocation, setSelectedSignalLocation] = useState<LocationSignalData | null>(null);
+
   // Congestion & Analytics
   const [congestionLevel] = useState(65);
   const [trafficStats] = useState<TrafficStats>({
@@ -66,11 +70,141 @@ export const useSmartTrafficSystem = () => {
 
   // Sample cross paths data
   const crossPaths: CrossPath[] = [
-    { id: 1, name: 'Rajmahal Square', x: 25, y: 30, congestion: 'High', vehicles: 45 },
-    { id: 2, name: 'Kalpana Square', x: 60, y: 45, congestion: 'Medium', vehicles: 32 },
-    { id: 3, name: 'Shastri Nagar Square', x: 40, y: 70, congestion: 'Low', vehicles: 18 },
-    { id: 4, name: 'Acharya Vihar Square', x: 75, y: 25, congestion: 'High', vehicles: 52 },
-    { id: 5, name: 'Maharishi College Square', x: 20, y: 80, congestion: 'Medium', vehicles: 28 }
+    { 
+      id: 1, 
+      name: 'Rajmahal Square', 
+      x: 25, 
+      y: 30, 
+      congestion: 'High', 
+      vehicles: 45,
+      videoUrl: '/videos/rajmahal-square.mp4',
+      liveStreamUrl: 'http://127.0.0.1:5000/live_feed_1',
+      isVideoEnabled: true
+    },
+    { 
+      id: 2, 
+      name: 'Kalpana Square', 
+      x: 60, 
+      y: 45, 
+      congestion: 'Medium', 
+      vehicles: 32,
+      videoUrl: '/videos/kalpana-square.mp4',
+      isVideoEnabled: true
+    },
+    { 
+      id: 3, 
+      name: 'Shastri Nagar Square', 
+      x: 40, 
+      y: 70, 
+      congestion: 'Low', 
+      vehicles: 18,
+      videoUrl: '/videos/shastri-nagar.mp4',
+      liveStreamUrl: 'http://127.0.0.1:5000/live_feed_3',
+      isVideoEnabled: true
+    },
+    { 
+      id: 4, 
+      name: 'Acharya Vihar Square', 
+      x: 75, 
+      y: 25, 
+      congestion: 'High', 
+      vehicles: 52,
+      videoUrl: '/videos/acharya-vihar.mp4',
+      isVideoEnabled: true
+    },
+    { 
+      id: 5, 
+      name: 'Maharishi College Square', 
+      x: 20, 
+      y: 80, 
+      congestion: 'Medium', 
+      vehicles: 28,
+      videoUrl: '/videos/maharishi-college.mp4',
+      liveStreamUrl: 'http://127.0.0.1:5000/live_feed_5',
+      isVideoEnabled: true
+    }
+  ];
+
+  // Location Signal Data
+  const [locationSignals, setLocationSignals] = useState<{[key: number]: TrafficSignals}>({
+    1: {
+      north: { state: 'green', countdown: 12 },
+      south: { state: 'red', countdown: 42 },
+      east: { state: 'red', countdown: 27 },
+      west: { state: 'red', countdown: 57 }
+    },
+    2: {
+      north: { state: 'red', countdown: 35 },
+      south: { state: 'red', countdown: 20 },
+      east: { state: 'green', countdown: 8 },
+      west: { state: 'red', countdown: 50 }
+    },
+    3: {
+      north: { state: 'red', countdown: 28 },
+      south: { state: 'green', countdown: 13 },
+      east: { state: 'red', countdown: 43 },
+      west: { state: 'red', countdown: 58 }
+    },
+    4: {
+      north: { state: 'red', countdown: 45 },
+      south: { state: 'red', countdown: 30 },
+      east: { state: 'red', countdown: 15 },
+      west: { state: 'green', countdown: 5 }
+    },
+    5: {
+      north: { state: 'red', countdown: 22 },
+      south: { state: 'red', countdown: 37 },
+      east: { state: 'red', countdown: 52 },
+      west: { state: 'red', countdown: 7 }
+    }
+  });
+
+  const locationSignalData: LocationSignalData[] = [
+    {
+      id: 1,
+      name: 'Rajmahal Square',
+      x: 25,
+      y: 30,
+      signals: locationSignals[1] || { north: { state: 'green', countdown: 12 }, south: { state: 'red', countdown: 42 }, east: { state: 'red', countdown: 27 }, west: { state: 'red', countdown: 57 } },
+      isActive: true,
+      lastUpdated: new Date().toLocaleTimeString()
+    },
+    {
+      id: 2,
+      name: 'Kalpana Square',
+      x: 60,
+      y: 45,
+      signals: locationSignals[2] || { north: { state: 'red', countdown: 35 }, south: { state: 'red', countdown: 20 }, east: { state: 'green', countdown: 8 }, west: { state: 'red', countdown: 50 } },
+      isActive: true,
+      lastUpdated: new Date().toLocaleTimeString()
+    },
+    {
+      id: 3,
+      name: 'Shastri Nagar Square',
+      x: 40,
+      y: 70,
+      signals: locationSignals[3] || { north: { state: 'red', countdown: 28 }, south: { state: 'green', countdown: 13 }, east: { state: 'red', countdown: 43 }, west: { state: 'red', countdown: 58 } },
+      isActive: true,
+      lastUpdated: new Date().toLocaleTimeString()
+    },
+    {
+      id: 4,
+      name: 'Acharya Vihar Square',
+      x: 75,
+      y: 25,
+      signals: locationSignals[4] || { north: { state: 'red', countdown: 45 }, south: { state: 'red', countdown: 30 }, east: { state: 'red', countdown: 15 }, west: { state: 'green', countdown: 5 } },
+      isActive: true,
+      lastUpdated: new Date().toLocaleTimeString()
+    },
+    {
+      id: 5,
+      name: 'Maharishi College Square',
+      x: 20,
+      y: 80,
+      signals: locationSignals[5] || { north: { state: 'red', countdown: 22 }, south: { state: 'red', countdown: 37 }, east: { state: 'red', countdown: 52 }, west: { state: 'red', countdown: 7 } },
+      isActive: false,
+      lastUpdated: '10:30:45 AM'
+    }
   ];
 
   // Traffic trends data
@@ -146,6 +280,18 @@ export const useSmartTrafficSystem = () => {
     return () => clearInterval(interval);
   }, [isLoggedIn, overrideMode, currentCycle]);
 
+  // Update selected location when locationSignals change
+  useEffect(() => {
+    if (selectedSignalLocation && locationSignals[selectedSignalLocation.id]) {
+      const updatedLocation = {
+        ...selectedSignalLocation,
+        signals: locationSignals[selectedSignalLocation.id],
+        lastUpdated: new Date().toLocaleTimeString()
+      };
+      setSelectedSignalLocation(updatedLocation);
+    }
+  }, [locationSignals]);
+
   // Manual signal override - Updated for 4-way intersection
   const handleSignalOverride = (direction: keyof TrafficSignals, newState: 'red' | 'yellow' | 'green') => {
     if (newState === 'green') {
@@ -178,6 +324,57 @@ export const useSmartTrafficSystem = () => {
     const log: OverrideLog = {
       id: Date.now(),
       direction,
+      state: newState,
+      time: new Date().toLocaleString(),
+      user: 'Admin'
+    };
+    setOverrideLogs(prev => [log, ...prev.slice(0, 9)]);
+  };
+
+  // Location-specific signal override handler
+  const handleLocationSignalOverride = (locationId: number, direction: keyof TrafficSignals, newState: 'red' | 'yellow' | 'green') => {
+    console.log(`Override triggered for Location ${locationId}, Direction: ${direction}, New State: ${newState}`);
+    
+    setLocationSignals(prev => {
+      const currentLocationSignals = prev[locationId] || {
+        north: { state: 'red', countdown: 30 },
+        south: { state: 'red', countdown: 30 },
+        east: { state: 'red', countdown: 30 },
+        west: { state: 'red', countdown: 30 }
+      };
+
+      const newLocationSignals = { ...currentLocationSignals };
+
+      if (newState === 'green') {
+        // When setting a direction to green, set all others to red
+        const directions = ['north', 'east', 'south', 'west'] as const;
+        directions.forEach(dir => {
+          if (dir === direction) {
+            newLocationSignals[dir] = { state: 'green', countdown: 15 };
+          } else {
+            newLocationSignals[dir] = { state: 'red', countdown: Math.floor(Math.random() * 45) + 15 };
+          }
+        });
+      } else {
+        // For red or yellow, just update that specific signal
+        newLocationSignals[direction] = {
+          state: newState,
+          countdown: newState === 'red' ? 45 : 5
+        };
+      }
+
+      console.log(`Updated signals for location ${locationId}:`, newLocationSignals);
+      
+      return {
+        ...prev,
+        [locationId]: newLocationSignals
+      };
+    });
+
+    // Log the override action
+    const log: OverrideLog = {
+      id: Date.now(),
+      direction: `Location ${locationId} - ${direction}`,
       state: newState,
       time: new Date().toLocaleString(),
       user: 'Admin'
@@ -235,6 +432,12 @@ export const useSmartTrafficSystem = () => {
     setOverrideMode,
     overrideLogs,
     handleSignalOverride,
+    
+    // Location Signals
+    locationSignalData,
+    selectedSignalLocation,
+    setSelectedSignalLocation,
+    handleLocationSignalOverride,
     
     // Analytics
     congestionLevel,

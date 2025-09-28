@@ -1,28 +1,47 @@
 import React from 'react';
-import { Clock, Settings } from 'lucide-react';
-import { TrafficSignals, Theme, OverrideLog } from '@/types/smart-traffic';
+import { Settings } from 'lucide-react';
+import { TrafficSignals, Theme, OverrideLog, LocationSignalData } from '@/types/smart-traffic';
+import LocationSelector from './LocationSelector';
+import LocationSignalDetails from './LocationSignalDetails';
 
 interface SignalsControlSectionProps {
   trafficSignals: TrafficSignals;
   overrideMode: boolean;
   overrideLogs: OverrideLog[];
+  locationSignalData: LocationSignalData[];
+  selectedSignalLocation: LocationSignalData | null;
   theme: Theme;
   onOverrideModeToggle: () => void;
   onSignalOverride: (direction: keyof TrafficSignals, newState: 'red' | 'yellow' | 'green') => void;
+  onLocationSelect: (location: LocationSignalData) => void;
+  onLocationSignalOverride: (locationId: number, direction: keyof TrafficSignals, newState: 'red' | 'yellow' | 'green') => void;
 }
 
 export default function SignalsControlSection({
   trafficSignals,
   overrideMode,
   overrideLogs,
+  locationSignalData,
+  selectedSignalLocation,
   theme,
   onOverrideModeToggle,
-  onSignalOverride
+  onSignalOverride,
+  onLocationSelect,
+  onLocationSignalOverride
 }: SignalsControlSectionProps) {
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ color: theme.primary, margin: 0 }}>4-Way Traffic Signal Control</h2>
+      {/* Header Section */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+        <div>
+          <h2 style={{ color: theme.primary, margin: '0 0 8px 0', fontSize: '24px', fontWeight: 'bold' }}>
+            🚦 Traffic Signal Control Center
+          </h2>
+          <p style={{ color: theme.neutral, margin: 0, fontSize: '14px' }}>
+            Monitor and control traffic signals at major intersections in Bhubaneswar
+          </p>
+        </div>
+        
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div style={{
             padding: '8px 15px',
@@ -34,10 +53,11 @@ export default function SignalsControlSection({
           }}>
             🔄 60s Cycle • 15s Green Each
           </div>
+          
           <button
             onClick={onOverrideModeToggle}
             style={{
-              padding: '10px 20px',
+              padding: '12px 20px',
               background: overrideMode ? theme.secondary : theme.primary,
               color: 'white',
               border: 'none',
@@ -45,153 +65,37 @@ export default function SignalsControlSection({
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              transition: 'all 0.3s ease'
             }}
           >
             <Settings size={16} />
-            {overrideMode ? 'Exit Manual' : 'Manual Override'}
+            {overrideMode ? 'Exit Manual Control' : 'Enable Manual Override'}
           </button>
         </div>
       </div>
 
-      {/* 4-Way Traffic Signals Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '25px',
-        marginBottom: '30px'
-      }}>
-        {Object.entries(trafficSignals).map(([direction, signal]) => (
-          <div key={direction} style={{
-            background: theme.background,
-            borderRadius: '15px',
-            padding: '25px',
-            border: `2px solid ${theme.primary}10`,
-            textAlign: 'center',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-          }}>
-            <h3 style={{ 
-              color: theme.primary, 
-              marginBottom: '20px',
-              textTransform: 'capitalize',
-              fontSize: '18px',
-              fontWeight: 'bold'
-            }}>
-              {direction} Lane
-            </h3>
+      {/* Location Selector */}
+      <LocationSelector
+        locations={locationSignalData}
+        selectedLocation={selectedSignalLocation}
+        theme={theme}
+        onLocationSelect={onLocationSelect}
+      />
 
-            {/* Traffic Light Visual */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '10px',
-              marginBottom: '20px'
-            }}>
-              {['red', 'yellow', 'green'].map(color => (
-                <div key={color} style={{
-                  width: '45px',
-                  height: '45px',
-                  borderRadius: '50%',
-                  background: signal.state === color ? 
-                    (color === 'red' ? '#f44336' : color === 'yellow' ? '#ffc107' : '#4caf50') :
-                    '#e0e0e0',
-                  boxShadow: signal.state === color ? 
-                    `0 0 25px ${color === 'red' ? '#f44336' : color === 'yellow' ? '#ffc107' : '#4caf50'}` : 
-                    'none',
-                  transition: 'all 0.3s ease',
-                  border: '3px solid #ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  {signal.state === color && (
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.8)'
-                    }} />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Current State Display */}
-            <div style={{
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: signal.state === 'red' ? '#f44336' : 
-                     signal.state === 'yellow' ? '#ffc107' : '#4caf50',
-              marginBottom: '15px',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
-              {signal.state}
-            </div>
-
-            {/* Countdown Timer */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginBottom: '20px',
-              padding: '10px',
-              background: theme.accent,
-              borderRadius: '8px'
-            }}>
-              <Clock size={18} color={theme.primary} />
-              <span style={{ 
-                color: theme.darkText, 
-                fontSize: '18px',
-                fontWeight: 'bold'
-              }}>
-                {signal.countdown}s
-              </span>
-            </div>
-
-            {/* Manual Override Controls */}
-            {overrideMode && (
-              <div style={{
-                display: 'flex',
-                gap: '8px',
-                justifyContent: 'center',
-                marginTop: '15px'
-              }}>
-                {(['red', 'yellow', 'green'] as const).map(color => (
-                  <button
-                    key={color}
-                    onClick={() => onSignalOverride(direction as keyof TrafficSignals, color)}
-                    style={{
-                      padding: '10px 15px',
-                      background: color === 'red' ? '#f44336' : 
-                                 color === 'yellow' ? '#ffc107' : '#4caf50',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      textTransform: 'uppercase',
-                      transition: 'transform 0.2s ease',
-                      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                  >
-                    {color}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      {/* Selected Location Signal Details */}
+      {selectedSignalLocation && (
+        <LocationSignalDetails
+          location={selectedSignalLocation}
+          overrideMode={overrideMode}
+          theme={theme}
+          onSignalOverride={(direction, newState) => 
+            onLocationSignalOverride(selectedSignalLocation.id, direction, newState)
+          }
+        />
+      )}
 
       {/* Synchronization Status */}
       <div style={{
@@ -201,7 +105,7 @@ export default function SignalsControlSection({
         border: `2px solid ${theme.primary}10`,
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: theme.primary, marginBottom: '15px' }}>
+        <h3 style={{ color: theme.primary, marginBottom: '15px', fontSize: '22px', fontWeight: 'bold' }}>
           🚦 4-Way Intersection Status
         </h3>
         <div style={{
@@ -215,10 +119,10 @@ export default function SignalsControlSection({
             borderRadius: '8px',
             borderLeft: '4px solid #4caf50'
           }}>
-            <div style={{ fontSize: '14px', color: '#4caf50', fontWeight: 'bold' }}>
+            <div style={{ fontSize: '18px', color: '#4caf50', fontWeight: 'bold' }}>
               ✅ One Green at a Time
             </div>
-            <div style={{ fontSize: '12px', color: theme.darkText, marginTop: '5px' }}>
+            <div style={{ fontSize: '16px', color: theme.darkText, marginTop: '5px' }}>
               Only one direction has green light
             </div>
           </div>
@@ -228,10 +132,10 @@ export default function SignalsControlSection({
             borderRadius: '8px',
             borderLeft: `4px solid ${theme.primary}`
           }}>
-            <div style={{ fontSize: '14px', color: theme.primary, fontWeight: 'bold' }}>
+            <div style={{ fontSize: '18px', color: theme.primary, fontWeight: 'bold' }}>
               ⏱️ 60-Second Cycle
             </div>
-            <div style={{ fontSize: '12px', color: theme.darkText, marginTop: '5px' }}>
+            <div style={{ fontSize: '16px', color: theme.darkText, marginTop: '5px' }}>
               15 seconds green per direction
             </div>
           </div>
@@ -241,10 +145,10 @@ export default function SignalsControlSection({
             borderRadius: '8px',
             borderLeft: '4px solid #ffa726'
           }}>
-            <div style={{ fontSize: '14px', color: '#ffa726', fontWeight: 'bold' }}>
+            <div style={{ fontSize: '18px', color: '#ffa726', fontWeight: 'bold' }}>
               🔄 Auto Cycling
             </div>
-            <div style={{ fontSize: '12px', color: theme.darkText, marginTop: '5px' }}>
+            <div style={{ fontSize: '16px', color: theme.darkText, marginTop: '5px' }}>
               N → E → S → W → Repeat
             </div>
           </div>

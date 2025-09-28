@@ -9,6 +9,14 @@ export const smartTrafficTheme: Theme = {
   accent: '#f8f9fa'
 };
 
+// Map Configuration
+export const mapConfig = {
+  backgroundImage: '/images/traffic-map-bg.jpg',
+  showOverlay: true,
+  overlayOpacity: 0.4,
+  fallbackGradient: true
+};
+
 export const getSeverityColor = (severity: 'Low' | 'Medium' | 'High', theme: Theme): string => {
   switch (severity) {
     case 'High':

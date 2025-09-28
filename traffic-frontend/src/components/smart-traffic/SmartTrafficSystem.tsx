@@ -1,7 +1,7 @@
 'use client';
 
 import { useSmartTrafficSystem } from '@/hooks/useSmartTrafficSystem';
-import { smartTrafficTheme } from '@/lib/smart-traffic-theme';
+import { smartTrafficTheme, mapConfig } from '@/lib/smart-traffic-theme';
 import LoginScreen from './login/LoginScreen';
 import Header from './layout/Header';
 import Sidebar from './layout/Sidebar';
@@ -47,6 +47,12 @@ export default function SmartTrafficSystem() {
     setOverrideMode,
     overrideLogs,
     handleSignalOverride,
+    
+    // Location Signals
+    locationSignalData,
+    selectedSignalLocation,
+    setSelectedSignalLocation,
+    handleLocationSignalOverride,
     
     // Analytics
     trafficStats
@@ -96,6 +102,9 @@ export default function SmartTrafficSystem() {
               theme={theme}
               onCrossPathSelect={setSelectedCrossPath}
               onShowPathDetails={setShowPathDetails}
+              backgroundImage={mapConfig.backgroundImage}
+              showOverlay={mapConfig.showOverlay}
+              overlayOpacity={mapConfig.overlayOpacity}
             />
           )}
 
@@ -117,9 +126,13 @@ export default function SmartTrafficSystem() {
               trafficSignals={trafficSignals}
               overrideMode={overrideMode}
               overrideLogs={overrideLogs}
+              locationSignalData={locationSignalData}
+              selectedSignalLocation={selectedSignalLocation}
               theme={theme}
               onOverrideModeToggle={() => setOverrideMode(!overrideMode)}
               onSignalOverride={handleSignalOverride}
+              onLocationSelect={setSelectedSignalLocation}
+              onLocationSignalOverride={handleLocationSignalOverride}
             />
           )}
 

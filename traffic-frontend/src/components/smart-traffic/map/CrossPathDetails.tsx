@@ -2,6 +2,7 @@
 
 import { CrossPath, Theme } from '@/types/smart-traffic';
 import { getCongestionColor } from '@/lib/smart-traffic-theme';
+import MiniVideoPlayer from './MiniVideoPlayer';
 
 interface CrossPathDetailsProps {
   crossPath: CrossPath;
@@ -36,23 +37,15 @@ export default function CrossPathDetails({ crossPath, theme, onClose }: CrossPat
         </button>
       </div>
 
-      {/* Live Feed Placeholder */}
-      <div style={{
-        width: '100%',
-        height: '200px',
-        background: '#000',
-        borderRadius: '10px',
-        marginBottom: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '30px', marginBottom: '10px' }}>📹</div>
-          <div>Live Traffic Feed</div>
-          <div style={{ fontSize: '12px', opacity: 0.7 }}>Cross Path {crossPath.id}</div>
-        </div>
+      {/* Mini Video Player */}
+      <div style={{ marginBottom: '20px' }}>
+        <MiniVideoPlayer
+          videoUrl={crossPath.videoUrl}
+          liveStreamUrl={crossPath.liveStreamUrl}
+          crossPathId={crossPath.id}
+          theme={theme}
+          isEnabled={crossPath.isVideoEnabled}
+        />
       </div>
 
       {/* Stats */}

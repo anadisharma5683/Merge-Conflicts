@@ -7,9 +7,19 @@ interface InteractiveMapProps {
   crossPaths: CrossPath[];
   theme: Theme;
   onCrossPathSelect: (path: CrossPath) => void;
+  backgroundImage?: string;
+  showOverlay?: boolean;
+  overlayOpacity?: number;
 }
 
-export default function InteractiveMap({ crossPaths, theme, onCrossPathSelect }: InteractiveMapProps) {
+export default function InteractiveMap({ 
+  crossPaths, 
+  theme, 
+  onCrossPathSelect, 
+  backgroundImage,
+  showOverlay = true,
+  overlayOpacity = 0.3
+}: InteractiveMapProps) {
   return (
     <div style={{
       flex: 2,
@@ -24,11 +34,28 @@ export default function InteractiveMap({ crossPaths, theme, onCrossPathSelect }:
       <div style={{
         width: '100%',
         height: '500px',
-        background: `linear-gradient(45deg, ${theme.accent} 0%, #e8f4f8 100%)`,
+        background: backgroundImage 
+          ? `url(${backgroundImage})` 
+          : `linear-gradient(45deg, ${theme.accent} 0%, #e8f4f8 100%)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         borderRadius: '10px',
         position: 'relative',
         overflow: 'hidden'
       }}>
+        {/* Background Overlay for better visibility */}
+        {backgroundImage && showOverlay && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `rgba(${theme.primary === '#1976d2' ? '25, 118, 210' : '0, 0, 0'}, ${overlayOpacity})`,
+            pointerEvents: 'none'
+          }} />
+        )}
         {/* Map Grid Lines */}
         <svg width="100%" height="100%" style={{ position: 'absolute' }}>
           {Array.from({ length: 10 }, (_, i) => (

@@ -7,6 +7,9 @@ export interface CrossPath {
   y: number;
   congestion: 'Low' | 'Medium' | 'High';
   vehicles: number;
+  videoUrl?: string;
+  liveStreamUrl?: string;
+  isVideoEnabled?: boolean;
 }
 
 export interface TrafficSignal {
@@ -19,6 +22,16 @@ export interface TrafficSignals {
   south: TrafficSignal;
   east: TrafficSignal;
   west: TrafficSignal;
+}
+
+export interface LocationSignalData {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
+  signals: TrafficSignals;
+  isActive?: boolean;
+  lastUpdated?: string;
 }
 
 export interface OverrideLog {
