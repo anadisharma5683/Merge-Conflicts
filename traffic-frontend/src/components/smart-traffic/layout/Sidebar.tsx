@@ -15,10 +15,10 @@ export default function Sidebar({ activeSection, theme, onSectionChange }: Sideb
     { id: 'video', icon: Play, label: 'Live Video Feed' },
     { id: 'signals', icon: Settings, label: 'Signal Status' },
     { id: 'warnings', icon: Shield, label: 'Traffic Warnings' },
+        { id: 'analysis', icon: AlertTriangle, label: 'AI Analysis' },
     { id: 'congestion', icon: Activity, label: 'Congestion Monitor' },
     { id: 'analytics', icon: BarChart3, label: 'Traffic Analytics' },
-    { id: 'accidents', icon: AlertTriangle, label: 'Accident Reports' },
-    { id: 'analysis', icon: AlertTriangle, label: 'AI Analysis' } // ✅ Added
+    { id: 'accidents', icon: AlertTriangle, label: 'Accident Reports' }
   ];
 
   return (
