@@ -2,11 +2,18 @@ import type { Metadata } from 'next';
 import './globals.css'; 
 
 export const metadata: Metadata = {
-  title: 'Traffic Analysis App - Real-time Vehicle Detection',
-  description: 'A web application for real-time traffic analysis with play/pause controls, counter reset, and performance optimization.',
-  keywords: 'traffic analysis, vehicle detection, real-time, YOLO, computer vision',
-  authors: [{ name: 'Traffic Analysis Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+  title: 'SIH Traffic Management System',
+  description: 'Advanced traffic management system with real-time monitoring and AI-powered analytics',
+  keywords: 'traffic management, smart city, real-time monitoring, AI analytics, traffic control',
+  authors: [{ name: 'SIH Traffic Management Team' }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -18,8 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Advanced traffic management system with real-time monitoring and AI-powered analytics" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body 
         style={{

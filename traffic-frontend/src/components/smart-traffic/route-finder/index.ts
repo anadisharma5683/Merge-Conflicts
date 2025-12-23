@@ -1,1 +1,0 @@
-export { default as SmartRouteFinder } from './SmartRouteFinder';

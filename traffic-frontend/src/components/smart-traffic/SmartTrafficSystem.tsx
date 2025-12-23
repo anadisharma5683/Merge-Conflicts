@@ -9,7 +9,6 @@ import MapSection from './map/MapSection';
 import VideoAnalysisSection from './video-analysis/VideoAnalysisSection';
 import SignalsControlSection from './signals/SignalsControlSection';
 import { WarningsSection } from './dashboard';
-import AnalysisPage from './ai-analysis/AnalysisPage';
 
 export default function SmartTrafficSystem() {
   const {
@@ -107,13 +106,13 @@ export default function SmartTrafficSystem() {
             />
           )}
 
-          {activeSection === 'warnings' && <WarningsSection />}
-
-          {activeSection === 'analysis' && (
-            <AnalysisPage theme={theme} trafficStats={trafficStats} />
+          {activeSection === 'warnings' && (
+            <WarningsSection
+              theme={theme}
+            />
           )}
 
-          {!['map', 'video', 'signals', 'warnings', 'analysis'].includes(activeSection) && (
+          {!['map', 'video', 'signals', 'warnings'].includes(activeSection) && (
             <div style={{
               background: theme.background,
               borderRadius: '15px',

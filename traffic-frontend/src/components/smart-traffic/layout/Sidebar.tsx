@@ -14,9 +14,6 @@ export default function Sidebar({ activeSection, theme, onSectionChange }: Sideb
     { id: 'map', icon: MapPin, label: 'Interactive Map' },
     { id: 'video', icon: Play, label: 'Live Video Feed' },
     { id: 'signals', icon: Settings, label: 'Signal Status' },
-    { id: 'warnings', icon: Shield, label: 'Traffic Warnings' },
-        { id: 'analysis', icon: AlertTriangle, label: 'AI Analysis' },
-    { id: 'congestion', icon: Activity, label: 'Congestion Monitor' },
     { id: 'analytics', icon: BarChart3, label: 'Traffic Analytics' },
     { id: 'accidents', icon: AlertTriangle, label: 'Accident Reports' }
   ];

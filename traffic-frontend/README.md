@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SIH Traffic Management System
 
-## Getting Started
+Advanced traffic management system with real-time monitoring and AI-powered analytics for smart city initiatives.
 
-First, run the development server:
+## Features
+
+- Real-time traffic monitoring
+- Interactive map with congestion visualization
+- Live video feed analysis
+- Traffic signal control
+- Warning and alert system
+- Accident reporting and management
+
+## Technology Stack
+
+- Next.js 14 with App Router
+- React 18
+- TypeScript
+- Tailwind CSS
+- Recharts for data visualization
+- Lucide React for icons
+
+## Deployment
+
+### Prerequisites
+
+- Node.js 18 or higher
+- npm 8 or higher
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Production Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Production Deployment
 
-## Learn More
+```bash
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file in the root directory:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+NEXT_PUBLIC_API_URL=https://your-api-url.com
+NEXT_PUBLIC_MAP_API_KEY=your-map-api-key
+```
 
-## Deploy on Vercel
+## Docker Deployment (Optional)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create a `Dockerfile` for containerized deployment:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+```
+
+## Production Optimizations
+
+- Server-side rendering for better SEO
+- Image optimization
+- Code splitting
+- Bundle optimization
+- Static site generation capability
+
+## API Integration
+
+The application is designed to connect to a backend API for:
+- Traffic data
+- Video stream processing
+- Signal control
+- User authentication
+
+## License
+
+MIT License

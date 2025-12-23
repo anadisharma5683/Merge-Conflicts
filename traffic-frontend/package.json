@@ -1,13 +1,16 @@
 {
-  "name": "traffic-analysis-frontend",
-  "version": "0.1.0",
+  "name": "sih-traffic-management-system",
+  "version": "1.0.0",
+  "description": "Advanced traffic management system with real-time monitoring and AI-powered analytics",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "export": "next build && next export",
+    "clean": "rm -rf .next && rm -rf out"
   },
   "dependencies": {
     "lucide-react": "^0.544.0",
@@ -15,7 +18,11 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "recharts": "^3.2.1",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-progress": "^1.0.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.13",
@@ -32,5 +39,18 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sih-traffic-management/sih-traffic-system.git"
+  },
+  "keywords": [
+    "traffic",
+    "management",
+    "smart-city",
+    "ai",
+    "real-time"
+  ],
+  "author": "SIH Traffic Management Team",
+  "license": "MIT"
 }
