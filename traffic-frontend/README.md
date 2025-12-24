@@ -62,22 +62,35 @@ NEXT_PUBLIC_MAP_API_KEY=your-map-api-key
 
 ## Docker Deployment (Optional)
 
-Create a `Dockerfile` for containerized deployment:
+The project includes a `Dockerfile` for containerized deployment:
 
 ```Dockerfile
+# Use official Node.js runtime as a parent image
 FROM node:18-alpine
 
+# Set environment variables
+ENV NODE_ENV=production
+
+# Set the working directory in the container
 WORKDIR /app
 
+# Copy package.json and package-lock.json (if available)
 COPY package*.json ./
-RUN npm ci --only=production
 
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy the rest of the application code
 COPY . .
+
+# Build the application
 RUN npm run build
 
+# Expose the port the app runs on
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Define the command to run the application
+CMD ["node", ".next/server.js"]
 ```
 
 ## Production Optimizations

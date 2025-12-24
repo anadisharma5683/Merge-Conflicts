@@ -17,7 +17,7 @@ export const useTrafficData = (videoStarted: boolean) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const backendUrl = 'http://127.0.0.1:5000';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:5000';
 
   const togglePlayPause = async () => {
     try {

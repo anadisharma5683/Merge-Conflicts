@@ -18,8 +18,8 @@ const nextConfig = {
     }
     return config;
   },
-  // Optimize output
-  output: 'standalone', // For standalone deployment
+  // Remove standalone output for standard deployment
+  // output: 'standalone', // Commented out for standard deployment
 };
 
 module.exports = nextConfig;
